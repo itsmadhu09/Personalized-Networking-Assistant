@@ -1,0 +1,26 @@
+# Environment & secrets
+.env
+venv/
+env/
+*.venv
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+*.egg-info/
+
+# Model cache (Hugging Face downloads — large, don't commit)
+.cache/
+*.bin
+*.safetensors
+
+# OS/editor cruft
+.DS_Store
+.vscode/
+.idea/
+
+# Local data generated at runtime (keep the folder, not old test data)
+data/history.json
+data/feedback.json
