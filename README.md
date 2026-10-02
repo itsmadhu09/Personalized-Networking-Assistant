@@ -1,104 +1,149 @@
-# Personalized Networking Assistant
+# 🔗 Linkora
 
-AI-powered web app that generates tailored conversation starters for networking
-events. Extracts themes from an event description with **DistilBERT**
-(zero-shot classification), generates human-like prompts with **GPT-2**,
-verifies quick facts via the **Wikipedia API**, and logs conversation history
-and feedback to local JSON files.
+### Connect smarter. Converse better.
+
+Linkora is an AI-powered web application that generates personalized conversation starters for networking events. It extracts themes from event descriptions using **DistilBERT** (zero-shot classification), generates conversation prompts using **GPT-2**, verifies quick facts through the **Wikipedia API**, and records conversation history and user feedback in local JSON files.
 
 ## Project Structure
 
+```text
+Linkora/
+├── .env                          # Keep your secret API keys here
+├── .gitignore                    # Ignores venv/ and .env
+├── requirements.txt              # Python dependencies
+├── README.md                     # Project documentation
+│
+├── backend/                      # FastAPI backend
+│   ├── main.py                   # API routes and logic
+│   ├── event_analyzer.py         # DistilBERT pipeline helper
+│   ├── topic_generator.py        # GPT-2 generation helper
+│   └── fact_checker.py           # Wikipedia API integration
+│
+├── frontend/                     # Streamlit frontend
+│   └── ui.py                     # UI, tabs, and layout
+│
+├── data/                         # Local data logs
+│   ├── history.json              # Conversation history
+│   └── feedback.json             # User feedback metrics
+│
+├── tests/                        # Automated testing
+│   └── test_main.py              # Unit and API tests
+│
+└── templates_and_milestones/     # Project reports and documentation
+    ├── 1_Brainstorming_Ideation/
+    ├── 2_Requirement_Analysis/
+    ├── 3_Project_Design/
+    └── 8_Project_Demonstration/
 ```
-personalized-networking-assistant/
-├── .env                          Keep your secret API keys here
-├── .gitignore                    Tells Git to ignore venv/ and .env
-├── requirements.txt              List of all pip packages
-├── README.md                     This guide
-│
-├── backend/                      FastAPI code
-│   ├── main.py                   FastAPI routes & logic
-│   ├── event_analyzer.py         DistilBERT pipeline helper
-│   ├── topic_generator.py        GPT-2 generation helper
-│   └── fact_checker.py           Wikipedia API integration
-│
-├── frontend/                     Streamlit UI code
-│   └── ui.py                     Streamlit views, tabs, and layout
-│
-├── data/                         Real-time data logs
-│   ├── history.json              Chronological generation log
-│   └── feedback.json             Thumbs up/down metrics
-│
-├── tests/                        Automated testing
-│   └── test_main.py              pytest suite (unit + API tests)
-│
-└── templates_and_milestones/     Word/PDF reports for mentor review
-    ├── 1_Brainstorming_Ideation/       Problem Statement, Empathy Map
-    ├── 2_Requirement_Analysis/         Data Flow Diagram, Tech Stack
-    ├── 3_Project_Design/               Solution Architecture
-    └── 8_Project_Demonstration/        Demo Planning, Scalability Plan
-```
+
+## Features
+
+* **Conversation Generation:** Creates tailored conversation starters from event descriptions and user interests.
+* **Theme Extraction:** Uses DistilBERT zero-shot classification to identify event themes.
+* **AI Text Generation:** Uses GPT-2 to generate conversation prompts.
+* **Fact Checking:** Uses the Wikipedia API for quick fact lookups.
+* **Conversation History:** Saves previous generations in local JSON files.
+* **Feedback Tracking:** Records user feedback on generated conversation starters.
+
+## Tech Stack
+
+* Python
+* FastAPI
+* Streamlit
+* DistilBERT
+* GPT-2
+* Wikipedia API
+* Hugging Face Transformers
+* JSON
 
 ## Setup
 
-Requires Python 3.10+.
+Requires Python 3.10 or later.
+
+### 1. Create a virtual environment
 
 ```bash
 python -m venv venv
-source venv/bin/activate      # Windows: venv\Scripts\activate
+```
+
+### 2. Activate the virtual environment
+
+**Windows PowerShell:**
+
+```powershell
+.\venv\Scripts\Activate.ps1
+```
+
+**Windows Command Prompt:**
+
+```cmd
+venv\Scripts\activate
+```
+
+**Linux/macOS:**
+
+```bash
+source venv/bin/activate
+```
+
+### 3. Install dependencies
+
+```bash
 pip install -r requirements.txt
 ```
 
-Copy your real keys into `.env` (never commit this file — it's already in
-`.gitignore`). The `GEMINI_API_KEY` slot is there if you later want to swap
-or supplement GPT-2 with Google's Gemini API.
+### 4. Configure environment variables
 
-First run will download the DistilBERT and GPT-2 model weights from
-Hugging Face (a few hundred MB total) — this can take a few minutes.
+Add your real API keys to `.env` if required. Never commit secrets to GitHub. The `GEMINI_API_KEY` variable is available for a possible future integration with Gemini.
 
-## Running locally
+The first run may download DistilBERT and GPT-2 model weights from Hugging Face.
 
-**Terminal 1 — backend:**
-```bash
-uvicorn backend.main:app --reload
+## Running Locally
+
+Run both services from the project root.
+
+**Terminal 1 — Backend:**
+
+```powershell
+python -m uvicorn backend.main:app --reload
 ```
-API docs (Swagger UI): http://localhost:8000/docs
 
-**Terminal 2 — frontend:**
-```bash
-streamlit run frontend/ui.py
+API documentation: http://localhost:8000/docs
+
+**Terminal 2 — Frontend:**
+
+```powershell
+python -m streamlit run frontend/ui.py
 ```
-App: http://localhost:8501
 
-> Run both commands from the project root so the `backend` package resolves
-> correctly.
-
-## Running tests
-
-```bash
-pytest tests/test_main.py -v
-```
+Application: http://localhost:8501
 
 ## API Endpoints
 
-| Method | Path                     | Description                                |
-|--------|--------------------------|---------------------------------------------|
-| POST   | `/analyze-event`         | Extract themes from an event description   |
-| POST   | `/generate-conversation` | Generate conversation starters + log history|
-| GET    | `/history`               | Retrieve past generations                    |
-| POST   | `/feedback`              | Record thumbs up/down on a starter          |
-| POST   | `/fact-check`            | Wikipedia-backed quick fact lookup          |
+| Method | Endpoint                 | Description                                    |
+| ------ | ------------------------ | ---------------------------------------------- |
+| POST   | `/analyze-event`         | Extract themes from an event description       |
+| POST   | `/generate-conversation` | Generate conversation starters and log history |
+| GET    | `/history`               | Retrieve previous generations                  |
+| POST   | `/feedback`              | Record feedback on a conversation starter      |
+| POST   | `/fact-check`            | Perform a Wikipedia-backed fact lookup         |
 
-## Notes / known limitations
+## Running Tests
 
-- GPT-2 is a small, general-purpose model — outputs are post-processed but
-  can still be uneven. See `templates_and_milestones/8_Project_Demonstration/`
-  for the plan to upgrade this.
-- `data/history.json` and `data/feedback.json` are flat-file storage,
-  intended for local dev/demo use, not concurrent multi-user production.
-- Model loading happens lazily on first API call — the very first request
-  after starting the server will be noticeably slower than the rest.
+```powershell
+pytest tests/test_main.py -v
+```
 
-## Team
+## Known Limitations
 
-C S Madhulika (Team Lead) · Meghana Kaverigari · Shaik Thanveen Afnan ·
-Veerapuram Sreeram · Venkatasuneel R
+* GPT-2 is a small, general-purpose language model, so generated results may be uneven.
+* Local JSON files are intended for development and demonstration, not concurrent multi-user production.
+* Model loading happens lazily on the first API request, which can make the first request slower.
+* Generated conversation starters should be reviewed for relevance and quality.
+
+## Future Improvements
+
+* Improve conversation starter relevance and quality.
+* Explore integration with larger language models.
+* Improve scalability and data storage.
+* Enhance personalization based on user preferences.
